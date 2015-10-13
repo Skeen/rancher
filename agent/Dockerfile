@@ -23,13 +23,18 @@ RUN apt-get install -y --no-install-recommends libssl-dev python-dev libffi-dev 
 RUN apt-get install -y --no-install-recommends jq
 
 ## DOCKER
-# RUN apt-get install -y --no-install-recommends docker.io
-# RUN curl -s -L https://get.docker.com/builds/Linux/x86_64/docker-1.6.0 > /usr/bin/docker; chmod +x /usr/bin/docker
-#curl -sSL https://get.docker.com | sh
-RUN dpkg -i http://launchpadlibrarian.net/211914968/docker.io_1.6.2~dfsg1-1ubuntu3~14.04.1_armhf.deb
+RUN curl -s -L http://launchpadlibrarian.net/216286290/libapparmor1_2.10-0ubuntu6_armhf.deb > libapparmor.deb
+RUN dpkg -i libapparmor.deb
+
+RUN curl -s -L http://launchpadlibrarian.net/211914968/docker.io_1.6.2~dfsg1-1ubuntu3~14.04.1_armhf.deb > docker.io.deb
+RUN dpkg -i docker.io.deb
 
 RUN curl -s -L https://github.com/rancherio/thin-provisioning-tools/releases/download/rancher-v0.1/pdata_tools > /usr/bin/pdata_tools; chmod +x /usr/bin/pdata_tools
 RUN apt-get install -y --no-install-recommends conntrack
+
+RUN apt-get install -y --no-install-recommends socat
+
+COPY util-linux/nsenter /bin/nsenter
 
 RUN mkdir -p /var/lib/cattle /var/lib/rancher
 COPY register.py resolve_url.py agent.sh run.sh /
