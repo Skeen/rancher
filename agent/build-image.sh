@@ -10,7 +10,7 @@ if [ -z "$TAG" ]; then
     TAG=$(echo ":$TAG-$ARCH")
 fi
 
-IMAGE=rancher/agent${TAG}
+IMAGE=skeen/agent${TAG}
 
 echo Building $IMAGE
 docker build -t ${IMAGE} -f $DOCKERFILE .

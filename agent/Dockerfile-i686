@@ -18,11 +18,16 @@ RUN apt-get update && apt-get install -y --no-install-recommends libssl-dev pyth
 RUN apt-get install -y --no-install-recommends jq
 
 # Docker
-RUN apt-get install -y --no-install-recommends apt-transport-https
-RUN apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 58118E89F3A912897C070ADBF76221572C52609D
-RUN echo "deb https://apt.dockerproject.org/repo ubuntu-trusty main" > /etc/apt/sources.list.d/docker.list
-RUN apt-get update
-RUN apt-get install -y --no-install-recommends docker.io
+#RUN apt-get install -y software-properties-common python-software-properties
+#RUN add-apt-repository ppa:docker-maint/testing
+#RUN apt-get update
+#RUN apt-get install -y --no-install-recommends docker.io
+
+RUN curl -s -L http://security.ubuntu.com/ubuntu/pool/main/a/apparmor/libapparmor1_2.10-0ubuntu6_i386.deb > libapparmor.deb
+RUN dpkg -i libapparmor.deb
+
+RUN curl -s -L https://launchpad.net/ubuntu/+archive/primary/+files/docker.io_1.6.2~dfsg1-1ubuntu3~14.04.1_i386.deb > docker.io.deb
+RUN dpkg -i docker.io.deb
 
 RUN curl -s -L https://github.com/rancherio/thin-provisioning-tools/releases/download/rancher-v0.1/pdata_tools > /usr/bin/pdata_tools; chmod +x /usr/bin/pdata_tools
 RUN apt-get update && apt-get install -y --no-install-recommends conntrack
@@ -30,4 +35,4 @@ RUN mkdir -p /var/lib/cattle /var/lib/rancher
 COPY register.py resolve_url.py agent.sh run.sh /
 ENTRYPOINT ["/run.sh"]
 LABEL "io.rancher.container.system"="rancher-agent"
-ENV RANCHER_AGENT_IMAGE rancher/agent:v0.8.2
+ENV RANCHER_AGENT_IMAGE skeen/agent:v0.8.2
